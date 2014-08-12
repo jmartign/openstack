@@ -1,4 +1,4 @@
-FROM    registry.nirmata.com/nirmata/openstack-base:latest
+FROM nirmata/openstack-base:latest
 MAINTAINER Ritesh Patel <ritesh@nirmata.com>
 
 # Install rabbitmq

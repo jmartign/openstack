@@ -18,24 +18,24 @@ export MYSQL_HOST=${HOST_NAME}
 export MYSQL_USER="admin"
 
 echo "Starting MYSQL DB..."
-sudo docker run -d -p 3306:3306 -e MYSQL_PASS=${MYSQL_PASS} registry.nirmata.com/nirmata/os-mysql
+sudo docker run -d -p 3306:3306 -e MYSQL_PASS=${MYSQL_PASS} nirmata/os-mysql
 echo "Starting RabbitMQ..."
-sudo docker run -d -p  5672:5672 -p 15672:15672 -e RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD} -v /var/log/openstack/rabbitmq:/var/log/supervisor registry.nirmata.com/nirmata/os-rabbitmq
+sudo docker run -d -p  5672:5672 -p 15672:15672 -e RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD} -v /var/log/openstack/rabbitmq:/var/log/supervisor nirmata/os-rabbitmq
 sleep 10
 echo "Starting keystone..."
 sudo docker run -d -p 35357:35357 -p 5000:5000 -h="keystone" -e HOST_NAME=${HOST_NAME} -e MYSQL_DB=${MYSQL_HOST} -e MYSQL_USER=${MYSQL_USER} -e MYSQL_PASSWORD=${MYSQL_PASS} \
-    -e ADMIN_TOKEN=${ADMIN_TOKEN} -e KEYSTONE_DBPASS=${MYSQL_PASS} -v /var/log/openstack/keystone:/var/log/supervisor registry.nirmata.com/nirmata/os-keystone 
+    -e ADMIN_TOKEN=${ADMIN_TOKEN} -e KEYSTONE_DBPASS=${MYSQL_PASS} -v /var/log/openstack/keystone:/var/log/supervisor nirmata/os-keystone 
 sleep 5
 echo "Starting glance"
 sudo docker run -d -p 9292:9292 -h="glance" -e HOST_NAME=${HOST_NAME} -e MYSQL_DB=${MYSQL_HOST} -e MYSQL_USER=${MYSQL_USER} -e MYSQL_PASSWORD=${MYSQL_PASS} \
-    -e RABBITMQ_HOST=${RABBITMQ_HOST} -e RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD} -e GLANCE_DBPASS=${MYSQL_PASS} -v /var/log/openstack/glance:/var/log/supervisor registry.nirmata.com/nirmata/os-glance 
+    -e RABBITMQ_HOST=${RABBITMQ_HOST} -e RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD} -e GLANCE_DBPASS=${MYSQL_PASS} -v /var/log/openstack/glance:/var/log/supervisor nirmata/os-glance 
 sleep 5
 echo "Starting nova"
 sudo docker run -d -p 8774:8774 -p 8775:8775 -h="nova" -e HOST_NAME=${HOST_NAME} -e HOST_IP=${HOST_IP} -e MYSQL_DB=${MYSQL_HOST} -e MYSQL_USER=${MYSQL_USER} -e MYSQL_PASSWORD=${MYSQL_PASS} \
-    -e RABBITMQ_HOST=${RABBITMQ_HOST} -e RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD} -e NOVA_DBPASS=${MYSQL_PASS} -e ADMIN_PASS=${ADMIN_PASSWORD} --privileged -v /var/log/openstack/nova:/var/log/supervisor registry.nirmata.com/nirmata/os-nova
+    -e RABBITMQ_HOST=${RABBITMQ_HOST} -e RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD} -e NOVA_DBPASS=${MYSQL_PASS} -e ADMIN_PASS=${ADMIN_PASSWORD} --privileged -v /var/log/openstack/nova:/var/log/supervisor nirmata/os-nova
 sleep 5
 echo "Starting horizon"
-sudo docker run -d -p 80:80 -p 11211:11211 -h="horizon" -v /var/log/openstack/horizon:/var/log/supervisor -v /var/log/openstack/apache2:/var/log/apache2 -e HOST_NAME=${HOST_NAME} registry.nirmata.com/nirmata/os-horizon
+sudo docker run -d -p 80:80 -p 11211:11211 -h="horizon" -v /var/log/openstack/horizon:/var/log/supervisor -v /var/log/openstack/apache2:/var/log/apache2 -e HOST_NAME=${HOST_NAME} nirmata/os-horizon
 
 echo "** Setting up defaults..."
 ./create_default_user.sh

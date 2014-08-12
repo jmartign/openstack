@@ -1,7 +1,8 @@
-FROM registry.nirmata.com/nirmata/openstack-base:latest
+FROM nirmata/openstack-base:latest
 MAINTAINER Ritesh Patel <ritesh@nirmata.com>
 
 #install nova
+RUN apt-get update
 RUN apt-get install -y --force-yes nova-api nova-cert nova-conductor nova-consoleauth nova-novncproxy nova-scheduler python-novaclient
 
 #Setup supervisord
