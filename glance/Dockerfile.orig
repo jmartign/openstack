@@ -1,0 +1,28 @@
+FROM    ubuntu:trusty
+MAINTAINER Ritesh Patel <ritesh@nirmata.com>
+
+# Repo and packages
+RUN echo deb http://archive.ubuntu.com/ubuntu trusty universe | tee -a /etc/apt/sources.list
+RUN echo deb http://archive.ubuntu.com/ubuntu trusty-updates universe | tee -a /etc/apt/sources.list
+RUN apt-get update
+RUN apt-get install -y --force-yes ubuntu-cloud-keyring
+#RUN echo deb http://ubuntu-cloud.archive.canonical.com/ubuntu precise-updates/grizzly main | tee -a /etc/apt/sources.list.d/grizzly.list
+#RUN apt-get update
+
+#Install Supervisord
+RUN apt-get install -y openssh-server supervisor
+
+# Keystone packages
+RUN apt-get install -y --force-yes python-mysqldb vim-tiny glance python-glance python-glanceclient
+
+#Setup sshd
+RUN mkdir -p /var/run/sshd
+RUN echo 'root:root' |chpasswd
+
+#Setup supervisord
+RUN mkdir -p /var/log/supervisor
+ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+EXPOSE 22
+
+CMD ["/usr/bin/supervisord", "-n"]
